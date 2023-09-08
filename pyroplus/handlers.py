@@ -1,7 +1,8 @@
 from typing import Callable
-from pyrogram.handlers import Handler
+from pyrogram.handlers.handler import Handler
 
 __all__ = ['ReadHistoryInboxHandler', 'ReadHistoryOutboxHandler']
+
 
 
 class ReadHistoryInboxHandler(Handler):

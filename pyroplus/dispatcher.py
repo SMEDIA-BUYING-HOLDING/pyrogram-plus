@@ -1,5 +1,5 @@
 from pyrogram.dispatcher import Dispatcher as _Dispatcher
-from pyrogram.raw import UpdateReadHistoryInbox, UpdateReadHistoryOutbox
+from pyrogram.raw.types import UpdateReadHistoryInbox, UpdateReadHistoryOutbox
 from .client import Client
 from .handlers import ReadHistoryInboxHandler
 from .types import ReadHistoryInbox
