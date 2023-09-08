@@ -22,7 +22,7 @@ import logging
 from collections import OrderedDict
 
 import pyroplus
-from pyroplus import Client, utils
+from pyroplus import utils
 from pyroplus.handlers import (
     CallbackQueryHandler, MessageHandler, EditedMessageHandler, DeletedMessagesHandler,
     UserStatusHandler, RawUpdateHandler, InlineQueryHandler, PollHandler,
