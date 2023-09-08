@@ -13,11 +13,10 @@ class OnReadHistoryOutbox:
         """Decorator for handling read history outbox
 
         This does the same thing as :meth:`~pyroplus.Client.add_handler` using the
-        :obj:`~pyroplus.handlers.ReadHistoryInboxHandler`.
+        :obj:`~pyroplus.handlers.ReadHistoryOutboxHandler`.
 
         Parameters:
             filters (:obj:`~pyroplus.filters`, *optional*):
-                Pass one or more filters to allow only a subset of messages to be passed
                 in your function.
 
             group (``int``, *optional*):

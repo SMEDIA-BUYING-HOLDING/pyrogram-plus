@@ -10,14 +10,13 @@ class OnReadHistoryInbox:
         filters=None,
         group: int = 0
     ) -> Callable:
-        """Decorator for handling new messages.
+        """Decorator for handling read history inbox
 
         This does the same thing as :meth:`~pyroplus.Client.add_handler` using the
-        :obj:`~pyroplus.handlers.MessageHandler`.
+        :obj:`~pyroplus.handlers.ReadHistoryInboxHandler`.
 
         Parameters:
             filters (:obj:`~pyroplus.filters`, *optional*):
-                Pass one or more filters to allow only a subset of messages to be passed
                 in your function.
 
             group (``int``, *optional*):
