@@ -38,7 +38,7 @@ from pyroplus.raw.types import (
     UpdateBotInlineSend, UpdateChatParticipant, UpdateChannelParticipant,
     UpdateBotChatInviteRequester
 )
-from pyroplus.types.types import ReadHistoryInbox
+from pyroplus.types.types import ReadHistoryInbox, ReadHistoryOutbox
 
 log = logging.getLogger(__name__)
 
@@ -75,7 +75,7 @@ class Dispatcher:
 
         async def read_history_outbox_parser(update, _, __):
             return (
-                ReadHistoryInbox._parse(client, update),
+                ReadHistoryOutbox._parse(client, update),
                 ReadHistoryOutboxHandler
             )
 
