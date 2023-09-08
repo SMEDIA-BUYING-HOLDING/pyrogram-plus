@@ -1,5 +1,5 @@
 from pyrogram import raw
-from pyrogram.types import Object, Update
+from pyrogram import Object, Update
 
 from .client import Client
 
