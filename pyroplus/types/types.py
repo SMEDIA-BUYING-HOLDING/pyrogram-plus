@@ -1,13 +1,12 @@
 from pyroplus import raw
 from pyroplus.types import Object, Update
-from pyroplus import Client
 
 
 class ReadHistoryInbox(Object, Update):
 
     def __init__(self,
                  *,
-                 client: Client,
+                 client: 'pyroplus.Client',
                  peer: raw.base.Peer,
                  max_id: int,
                  still_unread_count: int,
@@ -20,7 +19,7 @@ class ReadHistoryInbox(Object, Update):
         self.folder_id = folder_id
 
     @staticmethod
-    def _parse(client: Client, update: raw.types.UpdateReadHistoryInbox) -> 'ReadHistoryInbox':
+    def _parse(client: 'pyroplus.Client', update: raw.types.UpdateReadHistoryInbox) -> 'ReadHistoryInbox':
         return ReadHistoryInbox(
             client=client,
             peer=update.peer,
@@ -34,7 +33,7 @@ class ReadHistoryOutbox(Object, Update):
 
     def __init__(self,
                  *,
-                 client: Client,
+                 client: 'pyroplus.Client',
                  peer: raw.base.Peer,
                  max_id: int):
         super().__init__(client)
@@ -43,7 +42,7 @@ class ReadHistoryOutbox(Object, Update):
         self.max_id = max_id,
 
     @staticmethod
-    def _parse(client: Client, update: raw.types.UpdateReadHistoryOutbox) -> 'ReadHistoryOutbox':
+    def _parse(client: 'pyroplus.Client', update: raw.types.UpdateReadHistoryOutbox) -> 'ReadHistoryOutbox':
         return ReadHistoryOutbox(
             client=client,
             peer=update.peer,
