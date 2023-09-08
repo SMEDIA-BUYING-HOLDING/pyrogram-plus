@@ -28,6 +28,7 @@ from pyroplus.handlers import (
     UserStatusHandler, RawUpdateHandler, InlineQueryHandler, PollHandler,
     ChosenInlineResultHandler, ChatMemberUpdatedHandler, ChatJoinRequestHandler
 )
+from pyroplus.handlers.read_history_handler import ReadHistoryInboxHandler, ReadHistoryOutboxHandler
 from pyroplus.raw.types import (
     UpdateNewMessage, UpdateNewChannelMessage, UpdateNewScheduledMessage,
     UpdateEditMessage, UpdateEditChannelMessage,
@@ -37,13 +38,16 @@ from pyroplus.raw.types import (
     UpdateBotInlineSend, UpdateChatParticipant, UpdateChannelParticipant,
     UpdateBotChatInviteRequester
 )
+from pyroplus.types.types import ReadHistoryInbox
 
 log = logging.getLogger(__name__)
 
 
-class _Dispatcher:
+class Dispatcher:
     NEW_MESSAGE_UPDATES = (UpdateNewMessage, UpdateNewChannelMessage, UpdateNewScheduledMessage)
     EDIT_MESSAGE_UPDATES = (UpdateEditMessage, UpdateEditChannelMessage)
+    READ_HISTORY_INBOX_UPDATE = (UpdateReadHistoryInbox, )
+    READ_HISTORY_OUTBOX_UPDATE = (UpdateReadHistoryOutbox, )
     DELETE_MESSAGES_UPDATES = (UpdateDeleteMessages, UpdateDeleteChannelMessages)
     CALLBACK_QUERY_UPDATES = (UpdateBotCallbackQuery, UpdateInlineBotCallbackQuery)
     CHAT_MEMBER_UPDATES = (UpdateChatParticipant, UpdateChannelParticipant)
@@ -63,11 +67,23 @@ class _Dispatcher:
         self.updates_queue = asyncio.Queue()
         self.groups = OrderedDict()
 
+        async def read_history_inbox_parser(update, _, __):
+            return (
+                ReadHistoryInbox._parse(client, update),
+                ReadHistoryInboxHandler
+            )
+
+        async def read_history_outbox_parser(update, _, __):
+            return (
+                ReadHistoryInbox._parse(client, update),
+                ReadHistoryOutboxHandler
+            )
+
         async def message_parser(update, users, chats):
             return (
-                await pyroplus.types.Message._parse(self.client, update.message, users, chats,
-                                                    isinstance(update, UpdateNewScheduledMessage)),
-                MessageHandler
+                await pyroplus.types.Message._parse(
+                    self.client, update.message, users, chats, isinstance(update, UpdateNewScheduledMessage)
+                ), MessageHandler
             )
 
         async def edited_message_parser(update, users, chats):
@@ -128,16 +144,18 @@ class _Dispatcher:
             )
 
         self.update_parsers = {
-            _Dispatcher.NEW_MESSAGE_UPDATES: message_parser,
-            _Dispatcher.EDIT_MESSAGE_UPDATES: edited_message_parser,
-            _Dispatcher.DELETE_MESSAGES_UPDATES: deleted_messages_parser,
-            _Dispatcher.CALLBACK_QUERY_UPDATES: callback_query_parser,
-            _Dispatcher.USER_STATUS_UPDATES: user_status_parser,
-            _Dispatcher.BOT_INLINE_QUERY_UPDATES: inline_query_parser,
-            _Dispatcher.POLL_UPDATES: poll_parser,
-            _Dispatcher.CHOSEN_INLINE_RESULT_UPDATES: chosen_inline_result_parser,
-            _Dispatcher.CHAT_MEMBER_UPDATES: chat_member_updated_parser,
-            _Dispatcher.CHAT_JOIN_REQUEST_UPDATES: chat_join_request_parser
+            Dispatcher.NEW_MESSAGE_UPDATES: message_parser,
+            Dispatcher.EDIT_MESSAGE_UPDATES: edited_message_parser,
+            Dispatcher.DELETE_MESSAGES_UPDATES: deleted_messages_parser,
+            Dispatcher.CALLBACK_QUERY_UPDATES: callback_query_parser,
+            Dispatcher.USER_STATUS_UPDATES: user_status_parser,
+            Dispatcher.BOT_INLINE_QUERY_UPDATES: inline_query_parser,
+            Dispatcher.POLL_UPDATES: poll_parser,
+            Dispatcher.CHOSEN_INLINE_RESULT_UPDATES: chosen_inline_result_parser,
+            Dispatcher.CHAT_MEMBER_UPDATES: chat_member_updated_parser,
+            Dispatcher.CHAT_JOIN_REQUEST_UPDATES: chat_join_request_parser,
+            Dispatcher.READ_HISTORY_INBOX_UPDATE: read_history_inbox_parser,
+            Dispatcher.READ_HISTORY_OUTBOX_UPDATE: read_history_outbox_parser,
         }
 
         self.update_parsers = {key: value for key_tuple, value in self.update_parsers.items() for key in key_tuple}
@@ -257,20 +275,3 @@ class _Dispatcher:
                 pass
             except Exception as e:
                 log.exception(e)
-
-
-class Dispatcher(_Dispatcher):
-    def __init__(self, client: Client):
-        super().__init__(client)
-
-        async def read_history_inbox_parser(update, _, __):
-            ...
-
-        async def read_history_outbox_parser(update, _, __):
-            return (
-                ReadHistoryInbox._parse(client, update),
-                ReadHistoryInboxHandler
-            )
-
-        self.update_parsers[UpdateReadHistoryInbox] = read_history_inbox_parser
-        self.update_parsers[UpdateReadHistoryOutbox] = read_history_outbox_parser

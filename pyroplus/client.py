@@ -61,7 +61,7 @@ from .session.internals import MsgId
 log = logging.getLogger(__name__)
 
 
-class _Client(Methods):
+class Client(Methods):
     """Pyrogram Client, the main means for interacting with Telegram.
 
     Parameters:
@@ -200,32 +200,32 @@ class _Client(Methods):
     mimetypes.readfp(StringIO(mime_types))
 
     def __init__(
-        self,
-        name: str,
-        api_id: Union[int, str] = None,
-        api_hash: str = None,
-        app_version: str = APP_VERSION,
-        device_model: str = DEVICE_MODEL,
-        system_version: str = SYSTEM_VERSION,
-        lang_code: str = LANG_CODE,
-        ipv6: bool = False,
-        proxy: dict = None,
-        test_mode: bool = False,
-        bot_token: str = None,
-        session_string: str = None,
-        in_memory: bool = None,
-        phone_number: str = None,
-        phone_code: str = None,
-        password: str = None,
-        workers: int = WORKERS,
-        workdir: str = WORKDIR,
-        plugins: dict = None,
-        parse_mode: "enums.ParseMode" = enums.ParseMode.DEFAULT,
-        no_updates: bool = None,
-        takeout: bool = None,
-        sleep_threshold: int = Session.SLEEP_THRESHOLD,
-        hide_password: bool = False,
-        max_concurrent_transmissions: int = MAX_CONCURRENT_TRANSMISSIONS
+            self,
+            name: str,
+            api_id: Union[int, str] = None,
+            api_hash: str = None,
+            app_version: str = APP_VERSION,
+            device_model: str = DEVICE_MODEL,
+            system_version: str = SYSTEM_VERSION,
+            lang_code: str = LANG_CODE,
+            ipv6: bool = False,
+            proxy: dict = None,
+            test_mode: bool = False,
+            bot_token: str = None,
+            session_string: str = None,
+            in_memory: bool = None,
+            phone_number: str = None,
+            phone_code: str = None,
+            password: str = None,
+            workers: int = WORKERS,
+            workdir: str = WORKDIR,
+            plugins: dict = None,
+            parse_mode: "enums.ParseMode" = enums.ParseMode.DEFAULT,
+            no_updates: bool = None,
+            takeout: bool = None,
+            sleep_threshold: int = Session.SLEEP_THRESHOLD,
+            hide_password: bool = False,
+            max_concurrent_transmissions: int = MAX_CONCURRENT_TRANSMISSIONS
     ):
         super().__init__()
 
@@ -806,14 +806,24 @@ class _Client(Methods):
                 shutil.move(temp_file_path, file_path)
                 return file_path
 
+    async def get_peer_dialog(self, dialog_id: int) -> raw.types.dialog.Dialog:
+        peers: list = [await self.resolve_peer(dialog_id)]
+
+        r = await self.invoke(
+            raw.functions.messages.GetPeerDialogs(peers=peers),
+            sleep_threshold=60
+        )
+        dialog: raw.types.dialog.Dialog = r.dialogs[0]
+        return dialog
+
     async def get_file(
-        self,
-        file_id: FileId,
-        file_size: int = 0,
-        limit: int = 0,
-        offset: int = 0,
-        progress: Callable = None,
-        progress_args: tuple = ()
+            self,
+            file_id: FileId,
+            file_size: int = 0,
+            limit: int = 0,
+            offset: int = 0,
+            progress: Callable = None,
+            progress_args: tuple = ()
     ) -> Optional[AsyncGenerator[bytes, None]]:
         async with self.get_file_semaphore:
             file_type = file_id.file_type
@@ -1046,19 +1056,3 @@ class Cache:
         if len(self.store) > self.capacity:
             for _ in range(self.capacity // 2 + 1):
                 del self.store[next(iter(self.store))]
-
-
-class Client(_Client):
-
-    async def get_peer_dialog(self, dialog_id: int) -> raw.types.dialog.Dialog:
-        peers: list = [await self.resolve_peer(dialog_id)]
-
-        r = await self.invoke(
-            raw.functions.messages.GetPeerDialogs(peers=peers),
-            sleep_threshold=60
-        )
-        dialog: raw.types.dialog.Dialog = r.dialogs[0]
-        return dialog
-
-
-
