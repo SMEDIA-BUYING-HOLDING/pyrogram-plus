@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="pyrogram-plus",
+    name="pyroplus",
     version="0.0.1",
     author="Alexander, Egor",
     author_email="alexander-vin0@yandex.ru",
