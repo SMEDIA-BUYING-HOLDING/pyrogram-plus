@@ -26,9 +26,9 @@ from pyroplus import utils
 from pyroplus.handlers import (
     CallbackQueryHandler, MessageHandler, EditedMessageHandler, DeletedMessagesHandler,
     UserStatusHandler, RawUpdateHandler, InlineQueryHandler, PollHandler,
-    ChosenInlineResultHandler, ChatMemberUpdatedHandler, ChatJoinRequestHandler
+    ChosenInlineResultHandler, ChatMemberUpdatedHandler, ChatJoinRequestHandler,
+    ReadHistoryInboxHandler, ReadHistoryOutboxHandler
 )
-from pyroplus.handlers.read_history_handler import ReadHistoryInboxHandler, ReadHistoryOutboxHandler
 from pyroplus.raw.types import (
     UpdateNewMessage, UpdateNewChannelMessage, UpdateNewScheduledMessage,
     UpdateEditMessage, UpdateEditChannelMessage,
