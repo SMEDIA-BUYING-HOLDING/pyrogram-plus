@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pyroplus",
-    version="0.0.7",
+    version="0.0.7.0",
     author="Alexander, Egor",
     author_email="alexander-vin0@yandex.ru",
     description="Pyrogram package with some additional handlers",
