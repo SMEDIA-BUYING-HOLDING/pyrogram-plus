@@ -1,1 +1,2 @@
-from .client import Client
+from pyrogram import *
+from pyroplus import *
