@@ -1,2 +1,2 @@
-from pyrogram import *
+import pyrogram
 from pyroplus import *
