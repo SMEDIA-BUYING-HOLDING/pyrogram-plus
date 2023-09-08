@@ -4,8 +4,8 @@ import pyroplus
 from pyroplus.filters import Filter
 
 
-class OnReadHistoryInbox:
-    def on_read_history_inbox(
+class OnReadHistoryOutbox:
+    def on_read_history_outbox(
         self=None,
         filters=None,
         group: int = 0
